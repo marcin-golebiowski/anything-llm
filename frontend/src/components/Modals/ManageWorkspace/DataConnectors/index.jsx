@@ -8,6 +8,7 @@ import ConfluenceOptions from "./Connectors/Confluence";
 import { useState } from "react";
 import ConnectorOption from "./ConnectorOption";
 import WebsiteDepthOptions from "./Connectors/WebsiteDepth";
+import DirectoryDepthOptions from "./Connectors/DirectoryDepth"
 
 export const getDataConnectors = (t) => ({
   github: {
@@ -33,6 +34,12 @@ export const getDataConnectors = (t) => ({
     image: ConnectorImages.websiteDepth,
     description: t("connectors.website-depth.description"),
     options: <WebsiteDepthOptions />,
+  },
+  "directory-depth": {
+    name: t("connectors.directory-depth.name"),
+    image: ConnectorImages.directoryDepth,
+    description: t("connectors.directory-depth.description"),
+    options: <DirectoryDepthOptions />,
   },
   confluence: {
     name: t("connectors.confluence.name"),
