@@ -31,10 +31,8 @@ async function readFilesFromDirectory(directoryPath, extensions) {
 
   return files;
 }
-async function processFiles(files) {
-  const processedData = [];
 
-  for (const filePath of files) {
+async function processFile(filePath) {
     console.log(`Processing file: ${filePath}`);
 
     try {
@@ -42,33 +40,51 @@ async function processFiles(files) {
 
       if (!content.length) {
         console.warn(`Empty content for ${filePath}. Skipping.`);
-        continue;
       }
+      var modificationDate;
 
-      const url = `file://${path}`;
+      fs.stat(filePath, (err, stats) => {
+        modificationDate = stats.mtime;
+      });
+
+      const url = `file://${filePath}`;
       const filename = path.basename(filePath);
       const data = {
         id: v4(),
         url: url,
         title: slugify(filename),
         docSource: "Local file",
-        chunkSource: `file://${filePath}`,
+        chunkSource: `directory://${filePath}`,
         published: new Date().toLocaleString(),
         wordCount: content.split(" ").length,
         pageContent: content,
         token_count_estimate: tokenizeString(content),
+        modificationDate: modificationDate 
       };
 
       writeToServerDocuments(data, data.title);
-      processedData.push(data);
-
       console.log(`Successfully processed ${filePath}.`);
-    } catch (error) {
+      
+      return data;
+    } 
+    catch (error) {
       console.error(`Failed to process file ${filePath}.`, error);
     }
-  }
 
-  return processedData;
+    return null;
+}
+
+async function processFiles(files) {
+  const processedData = [];
+
+  for (const filePath of files) {
+    console.log(`Processing file: ${filePath}`);
+    var item = await processFile(filePath);
+    processedData.push(item);
+    console.log(`Successfully processed ${filePath}.`);
+  }
+  console.log(`[SUCCESS]: Files converted & ready for embedding.\n`);
+  return { success: true, reason: null, documents: processedData };
 }
 async function checkIfFolderExists(path) {
   try {
@@ -100,6 +116,6 @@ function tokenizeString(content) {
     return content.split(/\s+/).length;
 }
 
-module.exports = { directoryProcessor };;
+module.exports = { directoryProcessor, directoryFileProcessor: processFile };;
 
 
