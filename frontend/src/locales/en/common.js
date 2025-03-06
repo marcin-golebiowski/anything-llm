@@ -643,6 +643,16 @@ const TRANSLATIONS = {
       task_explained:
         "Once complete, all scraped content will be available for embedding into workspaces in the document picker.",
     },
+    "directory-depth": {
+      name: "Bulk Directory Scraper",
+      description: "Scrape a directory and its sub-directory",
+      path: "Directory path",
+      path_explained: "The path of the directory you want to scrape.",
+      extensions: "Files extensions",
+      extensions_explained: "The extensions of the files you want to scrape.",
+      task_explained:
+        "Once complete, all scraped content will be available for embedding into workspaces in the document picker.",
+    },
     confluence: {
       name: "Confluence",
       description: "Import an entire Confluence page in a single click.",

@@ -1,6 +1,7 @@
 const { setDataSigner } = require("../middleware/setDataSigner");
 const { verifyPayloadIntegrity } = require("../middleware/verifyIntegrity");
 const { resolveRepoLoader, resolveRepoLoaderFunction } = require("../utils/extensions/RepoLoader");
+const { directoryProcessor } = require("../utils/extensions/DirectoryLoader");
 const { reqBody } = require("../utils/http");
 const { validURL } = require("../utils/url");
 const RESYNC_METHODS = require("./resync");
@@ -124,6 +125,23 @@ function extensions(app) {
       } catch (e) {
         console.error(e);
         response.status(400).json({ success: false, reason: e.message });
+      }
+      return;
+    }
+  );
+
+  app.post(
+    "/ext/directory-depth",
+    async function (request, response) {
+
+      try {
+        const directoryLoader = directoryProcessor;
+        const { path, extensions } = reqBody(request);
+        const scrapedData = await directoryLoader(path, extensions);
+        response.status(200).json({ success: true, data: scrapedData });
+      } catch (e) {
+        console.error(e);
+        response.status(400) .json({ success: false, reason: e.message });
       }
       return;
     }

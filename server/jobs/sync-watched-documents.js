@@ -46,6 +46,18 @@ const { DocumentSyncRun } = require('../models/documentSyncRun.js');
         newContent = response?.content;
       }
 
+      if (type === 'directory') {
+        const response = await collector.forwardExtensionRequest({
+          endpoint: "/ext/resync-source-document",
+          method: "POST",
+          body: JSON.stringify({
+            type,
+            options: { filePath: source }
+          })
+        });
+        newContent = response?.content;
+      }
+
       if (type === 'confluence' || type === 'github' || type === 'gitlab') {
         const response = await collector.forwardExtensionRequest({
           endpoint: "/ext/resync-source-document",

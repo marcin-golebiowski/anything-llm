@@ -129,6 +129,26 @@ const DataConnector = {
         });
     },
   },
+  directoryDepth: {
+    scrape: async ({ path, extensions }) => {
+      return await fetch(`${API_BASE}/ext/directory-depth`, {
+        method: "POST",
+        headers: baseHeaders(),
+        body: JSON.stringify({ path, extensions }),
+      })
+        .then((res) => {
+          return res.json();
+        })
+        .then((res) => {
+          if (!res.success) throw new Error(res.reason);
+          return { data: res.data, error: null };
+        })
+        .catch((e) => {
+          console.error(e);
+          return { data: null, error: e.message };
+        });
+    },
+  },
 
   confluence: {
     collect: async function ({
